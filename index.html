@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מקודשת — הצעת עבודה</title>
+<style>
+:root { --primary: #2b5e3f; --primary-light: #3d7a52; --gold: #c4a265; --bg: #f7f2e6; --card: #ffffff; --text: #1b1b1b; --muted: #6c757d; --danger: #b5412a; --warning: #d4a030; --success: #2b5e3f; --border: #e0d8c8; --cream: #f5f0e1; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; direction: rtl; }
+
+/* Header */
+.header { background: linear-gradient(135deg, #1a3d28, var(--primary), var(--primary-light)); color: white; padding: 30px 20px; text-align: center; }
+.header .logo-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin: 0 auto 10px; display: block; box-shadow: 0 3px 15px rgba(0,0,0,0.3); border: 3px solid var(--gold); }
+.header h1 { font-size: 1.5em; margin-bottom: 4px; }
+.header .subtitle { opacity: 0.9; font-size: 0.95em; }
+
+/* Tabs */
+.tabs { display: flex; background: #1a3d28; padding: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tab-btn { flex: 1; min-width: 0; padding: 12px 8px; background: transparent; color: #a8d5b8; border: none; cursor: pointer; font-size: 0.82em; font-family: inherit; white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.2s; text-align: center; }
+.tab-btn:hover { background: rgba(255,255,255,0.1); }
+.tab-btn.active { color: white; border-bottom-color: var(--gold); background: rgba(255,255,255,0.1); font-weight: bold; }
+
+/* Content */
+.tab-content { display: none; padding: 20px; max-width: 750px; margin: 0 auto; }
+.tab-content.active { display: block; }
+
+/* Cards */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin: 12px 0; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+.card h3 { color: var(--primary); margin-bottom: 8px; font-size: 1.05em; }
+.card.gold { border-right: 4px solid var(--gold); }
+.card.green { border-right: 4px solid var(--success); }
+.card.red { border-right: 4px solid var(--danger); }
+.card.warn { border-right: 4px solid var(--warning); }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.88em; }
+th, td { padding: 9px 10px; border: 1px solid var(--border); text-align: right; }
+th { background: #dce8d8; color: var(--primary); font-weight: 600; }
+tr:nth-child(even) { background: #faf8f3; }
+
+/* Phase cards */
+.phase-card { background: white; border: 2px solid var(--border); border-radius: 12px; padding: 18px; margin: 12px 0; position: relative; overflow: hidden; }
+.phase-card::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 5px; }
+.phase-card.p1::before { background: var(--gold); }
+.phase-card.p2::before { background: var(--primary); }
+.phase-card.p3::before { background: #5c9ead; }
+.phase-card.p4::before { background: #8e6c88; }
+.phase-card.p5::before { background: #e07a5f; }
+.phase-card.p6::before { background: var(--success); }
+.phase-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
+.phase-header h3 { margin: 0; color: var(--primary); font-size: 1em; }
+.phase-price { background: var(--cream); color: var(--primary); font-weight: bold; padding: 4px 12px; border-radius: 20px; font-size: 0.95em; }
+.phase-desc { color: var(--muted); font-size: 0.9em; margin-bottom: 6px; }
+.phase-includes { font-size: 0.88em; padding-right: 18px; }
+.phase-includes li { margin: 3px 0; }
+
+/* Total */
+.total-box { background: linear-gradient(135deg, #1a3d28, var(--primary)); color: white; border-radius: 12px; padding: 22px; text-align: center; margin: 15px 0; }
+.total-box .amount { font-size: 2em; font-weight: bold; margin: 6px 0; }
+.total-box .note { opacity: 0.85; font-size: 0.88em; }
+
+/* Disruptions */
+.disruption { padding: 10px 0; border-bottom: 1px solid #eee; }
+.disruption:last-child { border-bottom: none; }
+.level { display: inline-block; padding: 2px 9px; border-radius: 12px; font-size: 0.78em; font-weight: 600; margin-left: 6px; }
+.level.live { background: #fce4e4; color: var(--danger); }
+.level.wait { background: #fff3cd; color: #856404; }
+.level.none { background: #d8f3dc; color: var(--success); }
+
+/* Decisions */
+.decision-item { background: #faf8f3; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin: 8px 0; display: flex; align-items: flex-start; gap: 10px; }
+.decision-item input[type="checkbox"] { width: 22px; height: 22px; margin-top: 2px; accent-color: var(--primary); flex-shrink: 0; cursor: pointer; }
+.decision-item label { cursor: pointer; flex: 1; font-size: 0.93em; }
+.decision-item label strong { color: var(--primary); }
+
+/* Send button */
+.send-btn { display: block; width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 1.05em; font-family: inherit; cursor: pointer; margin-top: 15px; font-weight: bold; }
+.send-btn:hover { background: var(--primary-light); }
+.send-btn:active { transform: scale(0.98); }
+.copy-success { display: none; text-align: center; padding: 10px; color: var(--success); font-weight: bold; margin-top: 8px; }
+
+/* Bot quote */
+.bot-quote { background: #f8f4f0; border-right: 3px solid var(--danger); padding: 8px 12px; margin: 6px 0; border-radius: 0 6px 6px 0; font-size: 0.88em; color: #555; }
+.bot-quote .source { font-size: 0.8em; color: var(--muted); margin-top: 2px; }
+
+/* Decision highlight (for ManyChat in Phase 2) */
+.decision-highlight { background: #fff8e1; border: 2px dashed var(--gold); border-radius: 10px; padding: 15px; margin: 12px 0; }
+.decision-highlight h4 { color: #856404; margin-bottom: 6px; font-size: 0.95em; }
+
+/* Leads card */
+.leads-card { background: linear-gradient(135deg, #fff8e1, #fff3cd); border: 2px solid var(--gold); border-radius: 10px; padding: 18px; margin: 12px 0; text-align: center; }
+.leads-card .leads-number { font-size: 2em; font-weight: bold; color: var(--primary); }
+
+.monthly-box { background: var(--cream); border: 1px solid var(--gold); border-radius: 10px; padding: 12px; margin: 12px 0; text-align: center; }
+.monthly-box .monthly-amount { font-size: 1.3em; font-weight: bold; color: var(--primary); }
+
+.footer { text-align: center; padding: 25px 20px; color: var(--muted); font-size: 0.82em; }
+
+.estimate-box { background: var(--cream); border: 1px solid var(--gold); border-radius: 10px; padding: 14px; margin: 15px 0; text-align: center; font-size: 0.93em; }
+
+@media (max-width: 500px) {
+    .tab-btn { font-size: 0.75em; padding: 10px 5px; }
+    table { font-size: 0.82em; }
+    .total-box .amount { font-size: 1.7em; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <img src="logo.jpg" alt="מקודשת" class="logo-img">
+    <h1>הצעת עבודה — בוט וואטסאפ</h1>
+    <div class="subtitle">מקודשת | בוטיק ספא ומספרה | הכל אהבה 💛</div>
+</div>
+
+<div class="tabs">
+    <button class="tab-btn active" onclick="openTab(event,'findings')">מצב נוכחי</button>
+    <button class="tab-btn" onclick="openTab(event,'plan')">תוכנית עבודה</button>
+    <button class="tab-btn" onclick="openTab(event,'cost')">עלויות</button>
+    <button class="tab-btn" onclick="openTab(event,'transparency')">מידע חשוב</button>
+    <button class="tab-btn" onclick="openTab(event,'marketing')">שיווק שוטף לאחר השקת הבוט</button>
+    <button class="tab-btn" onclick="openTab(event,'decisions')">ההחלטות שלך</button>
+</div>
+
+<!-- ==================== TAB 1: מצב נוכחי ==================== -->
+<div id="findings" class="tab-content active">
+    <h2 style="color:var(--primary); margin-bottom:12px;">נילי היקרה 🌿</h2>
+    <p>בדקנו את יכולות הבוט ושאר הכלים במערכת "תפעולית" וגילינו:</p>
+
+    <div class="card green">
+        <h3>🌿 קיים בתפעולית ומוכן — רק צריך להפעיל</h3>
+        <p style="font-size:0.9em; margin-bottom:10px">הכלים האלה כבר קיימים במערכת שאת משלמת עליה, אבל עדיין לא הופעלו:</p>
+        <ul style="font-size:0.9em; padding-right:18px">
+            <li><strong>שימור לקוחות</strong> — אוטומציות שיודעות לשלוח הודעת וואטסאפ בזמן הנכון אחרי כל טיפול (לפי סוג השירות)</li>
+            <li><strong>שאלון רפואי</strong> — טפסים דיגיטליים שנשמרים ישירות בכרטיס הלקוחה</li>
+            <li><strong>שוברי מתנה</strong> — ניהול טיפול היכרות חינמי עם מעקב אוטומטי</li>
+            <li><strong>תזכורות לפני תור</strong> — אוטומציות עם תזמון לפי שעות או ימים</li>
+            <li><strong>ברכת יום הולדת</strong> — טריגר יום הולדת מובנה + הודעה ממותגת</li>
+            <li><strong>שיווק וקמפיינים</strong> — הודעות תפוצה בוואטסאפ, SMS, מייל — מוכן לשימוש</li>
+        </ul>
+        <p style="margin-top:10px; font-weight:bold; color:var(--primary);">את כבר משלמת על כל זה — נפעיל את הכל כחלק מהפרויקט.</p>
+    </div>
+
+    <div class="card gold">
+        <h3>💡 צריך כלי נוסף (ManyChat)</h3>
+        <p style="font-size:0.9em; margin-bottom:10px">הדברים הבאים דורשים מערכת שיודעת לנהל שיחות מורכבות — תפעולית לא יודעת לעשות אותם:</p>
+        <ul style="font-size:0.9em; padding-right:18px">
+            <li><strong>תסריטי שיחה</strong> — ניהול מסלולי שיחה שלמים (ספא / צבע / תספורת) עם ענפים, בחירות, ותגובות מותאמות</li>
+            <li><strong>מסלול חדשה/ותיקה</strong> — זיהוי אם הלקוחה חדשה (מתנה!) או ותיקה (תפריט רגיל)</li>
+            <li><strong>הודעת הזהב</strong> — הצעת כרטיסייה 2 שעות אחרי טיפול היכרות</li>
+            <li><strong>הזרעה עדינה לאורגני</strong> — אחרי בחירת כימי, להזכיר בעדינות שיש אופציה אורגנית</li>
+            <li><strong>מקדמות מותאמות</strong> — סכום שונה לפי סוג שירות (₪50 / ₪100 / ₪150-200)</li>
+            <li><strong>הגבלת 3 מתנות ביום</strong></li>
+        </ul>
+        <p style="font-size:0.85em; color:var(--muted); margin-top:8px">ManyChat Pro עולה כ-₪50-60 לחודש. זו החלטה שנקבל ביחד — ראי טאב "ההחלטות שלך".</p>
+    </div>
+
+    <div class="card warn">
+        <h3>⚙️ קיים אבל צריך שיפור — הבוט הנוכחי</h3>
+        <p style="font-size:0.9em; margin-bottom:8px">סוכן ה-AI שרץ היום קובע תורים, אבל יש בעיות שצריך לתקן (שלב 1 בתוכנית מטפל בזה):</p>
+        <ul style="font-size:0.9em; padding-right:18px">
+            <li>שפה לא נכונה ("אני" במקום "אנחנו", לשון זכר)</li>
+            <li>לחץ מכירתי שלא מתאים לטון של מקודשת</li>
+            <li>לא מזהה מילים נרדפות לשירותים</li>
+            <li>אמוג'ים לא מאושרים + הודעת פתיחה גנרית</li>
+        </ul>
+        <p style="font-size:0.85em; color:var(--muted); margin-top:8px">פירוט מלא עם דוגמאות — למטה 👇</p>
+    </div>
+
+    <div class="leads-card">
+        <div class="leads-number">187 לידים</div>
+        <p style="margin-top:6px;">אנשים שהתעניינו במקודשת ועדיין לא קיבלו מענה.<br>הם כבר במערכת — ומחכים שנפנה אליהם. נטפל בזה כחלק מהפרויקט.</p>
+    </div>
+
+    <div class="card red">
+        <h3>⚠️ מה דורש שיפור בבוט הנוכחי</h3>
+        <p style="margin-bottom:10px; font-size:0.9em; color:var(--muted)">בדקנו את השיחות של הבוט ואת ההגדרות שלו. הנה מה שמצאנו:</p>
+
+        <strong style="color:var(--primary)">1. שפה וזהות — לא מתאימים למותג</strong>
+        <div class="bot-quote">
+            "היי, אני המזכירה הדיגיטלית של מקודשת"
+            <div class="source">מתוך הגדרות הסוכן — "אני" במקום "אנחנו", מרגיש קר ומנותק</div>
+        </div>
+        <div class="bot-quote">
+            "אני שומר לך את המקום"
+            <div class="source">מתוך שיחת בוט — לשון זכר! לקהל של נשים בלבד</div>
+        </div>
+        <div class="bot-quote">
+            "תרצו לקבל טיפול חינם?"
+            <div class="source">מתוך הודעת הפתיחה — פנייה בזכר רבים, לא מתאים</div>
+        </div>
+
+        <strong style="color:var(--primary); display:block; margin-top:12px">2. לחץ מכירתי — לא מתאים לטון של מקודשת</strong>
+        <div class="bot-quote">
+            "רק שלא תפספסי!"
+            <div class="source">מתוך שיחת בוט — יוצר תחושת לחץ, מקודשת מזמינה ולא דוחפת</div>
+        </div>
+        <div class="bot-quote">
+            "המקומות נסגרים מהר"
+            <div class="source">מתוך שיחת בוט — דחיפות מלאכותית, לא בסגנון שלך</div>
+        </div>
+
+        <strong style="color:var(--primary); display:block; margin-top:12px">3. בעיות טכניות</strong>
+        <div class="bot-quote">
+            לקוחה: "עיסוי לימפטי" ← בוט: "השירות אינו זמין"
+            <div class="source">הבוט לא מכיר מילים נרדפות — פרסותרפיה, ניקוז לימפטי, עיסוי לימפטי זה אותו דבר</div>
+        </div>
+        <div class="bot-quote">
+            "scheduling?"
+            <div class="source">מתוך שיחת בוט — אנגלית דולפת באמצע שיחה בעברית</div>
+        </div>
+        <div class="bot-quote">
+            "העסק ייצור איתך קשר בקרוב"
+            <div class="source">כשהבוט לא יודע מה לעשות, הוא מסיים את השיחה ככה — קר ולא מזמין</div>
+        </div>
+
+        <strong style="color:var(--primary); display:block; margin-top:12px">4. אמוג'ים לא מאושרים</strong>
+        <p style="font-size:0.88em">הבוט משתמש ב-🙏 😊 🔥 — במקום באמוג'ים של המותג: 🌿 💛 ✨ 🌸</p>
+
+        <strong style="color:var(--primary); display:block; margin-top:12px">5. חוסרים</strong>
+        <ul style="font-size:0.88em; padding-right:18px">
+            <li><strong>אין שאלון רפואי</strong> — לקוחה קובעת תור בלי שנשאל אם יש משהו רפואי שחשוב לדעת</li>
+            <li><strong>אין שימור</strong> — אחרי טיפול, שקט מוחלט. לקוחות שוכחות לחזור ואין תזכורת</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ==================== TAB 2: תוכנית עבודה ==================== -->
+<div id="plan" class="tab-content">
+    <p style="margin-bottom:15px"><strong>הפרויקט מחולק ל-6 שלבים.</strong> בכל שלב את רואה תוצאה ונותנת משוב לפני שעוברים הלאה.</p>
+
+    <div class="phase-card p1">
+        <div class="phase-header"><h3>🌟 שלב 1 — שיפור מיידי של הבוט</h3><span class="phase-price">₪350</span></div>
+        <div class="phase-desc">שינויים בהגדרות הסוכן AI בתפעולית שישפרו את הבוט כבר עכשיו. את תאשרי כל שינוי לפני שנעשה אותו.</div>
+        <table style="font-size:0.85em">
+        <tr><th>מה נשנה</th><th>מצב נוכחי</th><th>מצב חדש</th></tr>
+        <tr><td><strong>כינוי הסוכן</strong></td><td>"אני המזכירה הדיגיטלית"</td><td>כינוי חם ב"אנחנו", עם 🌿, ממותג למקודשת</td></tr>
+        <tr><td><strong>מידע על העסק</strong></td><td>טקסט בסיסי, חסר שירותים</td><td>כל השירותים עם מילים נרדפות (פרסותרפיה = ניקוז לימפטי = עיסוי לימפטי), פילוסופיה, "שיקום" ולא "צביעה"</td></tr>
+        <tr><td><strong>אורך תגובה</strong></td><td>"קצר תמציתי" — תשובות קצוצות</td><td>"מאוזן" — מספיק מידע בלי להציף</td></tr>
+        <tr><td><strong>אמוג'ים</strong></td><td>🙏 😊 🔥 (לא של המותג)</td><td>רק 🌿 💛 ✨ 🌸 (מאושרים)</td></tr>
+        <tr><td><strong>הודעת פתיחה</strong></td><td>"היי תרצו לקבל טיפול חינם?" (זכר, גנרי, דוחף)</td><td>הודעה ממותגת, חמה, בלשון נקבה</td></tr>
+        </table>
+    </div>
+
+    <div class="phase-card p2">
+        <div class="phase-header"><h3>💬 שלב 2 — תסריטי שיחה</h3><span class="phase-price">₪2,200</span></div>
+        <div class="phase-desc">3 תסריטים מלאים שמנהלים את כל השיחה עם הלקוחה — מהרגע שהיא כותבת ועד שהיא קובעת תור.</div>
+        <ul class="phase-includes">
+            <li><strong>ספא:</strong> חדשה/ותיקה → מתנה (טיפול היכרות 30 דק' חינם) → בחירת סוג טיפול → שאלה רפואית → שליחת זמנים → אישור תור → הודעת הזהב (הצעת כרטיסייה 2 שעות אחרי)</li>
+            <li><strong>צבע:</strong> מצמחים/כימי → הסבר ההבדל (בכבוד, בלי שיפוט) → הזרעה עדינה לאורגני → מקדמה ₪100 → שאלה רפואית → תור</li>
+            <li><strong>תספורת:</strong> 6 שירותים (תספורת / גוונים / תסרוקת אירוע / שיקום / חבילה / מנוי פן) → פירוט כל שירות → מקדמה לפי סוג → תור</li>
+            <li>כל הטקסטים בשפת המותג: "אנחנו", "יקרה", אמוג'ים מאושרים</li>
+            <li><strong>בדיקת איכות (QA)</strong> לכל תסריט — ננסה, נתקן, ואז תבדקי גם את</li>
+        </ul>
+
+        <div class="decision-highlight">
+            <h4>💡 החלטה שלך — מערכת נוספת לתסריטי השיחה</h4>
+            <p style="font-size:0.88em">תסריטי השיחה דורשים כלי שיודע לנהל מסלולים מורכבים (חדשה/ותיקה, בחירת שירות, מקדמות שונות). <strong>תפעולית לא יודעת לעשות את זה.</strong></p>
+            <p style="font-size:0.88em; margin-top:6px">הכלי המומלץ: <strong>ManyChat Pro</strong> — עלות של <strong>כ-₪50-60 לחודש</strong> (~$15). בלעדיו, נוכל לשפר את הבוט הקיים (שלב 1) ולהקים אוטומציות (שלב 3), אבל <strong>לא נוכל לבנות את תסריטי השיחה המלאים</strong> — כולל הודעת הזהב, ההזרעה העדינה, והמקדמות המותאמות.</p>
+            <p style="font-size:0.85em; color:var(--muted); margin-top:6px">זו החלטה שנקבל ביחד — ראי טאב "ההחלטות שלך".</p>
+        </div>
+    </div>
+
+    <div class="phase-card p3">
+        <div class="phase-header"><h3>🔄 שלב 3 — אוטומציות ושימור</h3><span class="phase-price">₪600</span></div>
+        <div class="phase-desc">הודעות אוטומטיות שמחזירות לקוחות — בלי שתצטרכי לעשות כלום. הכל מתוך תפעולית.</div>
+        <ul class="phase-includes">
+            <li><strong>13 הודעות שימור</strong> — כל אחת בזמן הנכון אחרי הטיפול הספציפי (למשל: 5 ימים אחרי ספא, 18 יום אחרי צבע כימי, 35 יום אחרי צבע מצמחים)</li>
+            <li><strong>שאלון רפואי אוטומטי</strong> — נשלח אחרי קביעת תור, התשובות נשמרות בכרטיס הלקוחה</li>
+            <li><strong>שובר מתנה</strong> לטיפול היכרות + <strong>ברכת יום הולדת</strong> ממותגת</li>
+            <li><strong>תזכורות</strong> — 24 שעות ו-3 שעות לפני תור, עם טקסט מותאם לסוג הטיפול</li>
+            <li><strong>הודעת טיפים</strong> — 24 שעות אחרי טיפול אורגני (טיפוח, "לא לחפוף")</li>
+        </ul>
+    </div>
+
+    <div class="phase-card p4">
+        <div class="phase-header"><h3>💳 שלב 4 — תשלומים</h3><span class="phase-price">₪350</span></div>
+        <div class="phase-desc">מקדמות מותאמות — הלקוחה משלמת, את מקבלת אישור אוטומטי.</div>
+        <ul class="phase-includes">
+            <li><strong>מקדמה לפי שירות:</strong> ₪50 לספא ותספורת, ₪100 לצבע, ₪150-200 לתסרוקת אירוע</li>
+            <li><strong>לינק תשלום בתוך השיחה</strong> — הלקוחה לוחצת, משלמת, ומקבלת אישור</li>
+            <li><strong>כרטיסייה:</strong> ₪999 תשלום מלא (10 טיפולים במקום ₪2,500)</li>
+            <li>חיבור למערכת התשלומים הקיימת</li>
+        </ul>
+    </div>
+
+    <div class="phase-card p5">
+        <div class="phase-header"><h3>📣 שלב 5 — שיווק</h3><span class="phase-price">₪500</span></div>
+        <div class="phase-desc">הגדרת כלי השיווק בתפעולית, קמפיין ראשון, והדרכה איך להמשיך לבד.</div>
+        <ul class="phase-includes">
+            <li><strong>קמפיין ל-187 הלידים</strong> שמחכים במערכת — הודעה ממותגת שמזמינה אותם לחזור</li>
+            <li>יצירת <strong>2-3 תבניות הודעה</strong> מוכנות (חג, מבצע, חדשות) בשפת המותג</li>
+            <li><strong>הדרכה</strong> — איך לבחור קהל, לכתוב הודעה, ולשלוח קמפיין בעצמך</li>
+        </ul>
+    </div>
+
+    <div class="phase-card p6">
+        <div class="phase-header"><h3>🚀 שלב 6 — השקה + ליווי</h3><span class="phase-price">₪500</span></div>
+        <div class="phase-desc">בדיקה מלאה, העברה למספר העסקי, וליווי אחרי ההשקה.</div>
+        <ul class="phase-includes">
+            <li><strong>בדיקה מקצה לקצה</strong> — כל תסריט, כל אוטומציה, כל תשלום</li>
+            <li><strong>בדיקה איתך</strong> — תנסי בעצמך ותיתני משוב</li>
+            <li><strong>העברה למספר העסקי</strong> — הבוט החדש מחליף את הישן</li>
+            <li><strong>ליווי אחרי ההשקה</strong> — מעקב, תיקונים, התאמות עד שהכל עובד חלק</li>
+        </ul>
+    </div>
+
+    <div class="estimate-box">
+        <strong>צפי זמן:</strong> כשבועיים, בהתאם לסבבי התיקונים ולעיכובים טכניים (אישורי Meta, למשל).
+    </div>
+</div>
+
+<!-- ==================== TAB 3: עלויות ==================== -->
+<div id="cost" class="tab-content">
+
+    <div class="total-box">
+        <div>מחיר הפרויקט</div>
+        <div class="amount">₪4,500</div>
+        <div class="note">כולל את כל 6 השלבים מ-א' עד ת'</div>
+    </div>
+
+    <div class="card">
+        <h3>פירוט לפי שלבים:</h3>
+        <table>
+        <tr><th>שלב</th><th>תיאור</th><th>שווי</th></tr>
+        <tr><td>1</td><td>שיפור מיידי של הבוט הקיים</td><td>₪350</td></tr>
+        <tr><td>2</td><td>בניית 3 תסריטי שיחה + בדיקות איכות</td><td>₪2,200</td></tr>
+        <tr><td>3</td><td>אוטומציות ושימור (13 סוגים)</td><td>₪600</td></tr>
+        <tr><td>4</td><td>תשלומים ומקדמות</td><td>₪350</td></tr>
+        <tr><td>5</td><td>שיווק — הגדרות + קמפיין + הדרכה</td><td>₪500</td></tr>
+        <tr><td>6</td><td>השקה + ליווי</td><td>₪500</td></tr>
+        <tr style="font-weight:bold; background:#dce8d8"><td></td><td>סה"כ</td><td>₪4,500</td></tr>
+        </table>
+    </div>
+
+    <div class="monthly-box">
+        <div>עלות חודשית שוטפת</div>
+        <div class="monthly-amount">~₪50-60/חודש</div>
+        <div style="font-size:0.85em; color:var(--muted); margin-top:4px">בתנאי שתרצי את תסריטי השיחה המלאים — מנוי ManyChat Pro (~$15).<br>תפעולית כבר משולמת, אין עלות נוספת עבורה.</div>
+    </div>
+
+    <div class="card gold">
+        <h3>מה כלול במחיר:</h3>
+        <ul>
+            <li>כתיבת כל הטקסטים בשפת המותג של מקודשת</li>
+            <li>בדיקות איכות בכל שלב</li>
+            <li>ליווי אחרי ההשקה — מעקב, תיקונים, התאמות</li>
+            <li>תיעוד מלא — כך שתוכלי להתנהל לבד בהמשך</li>
+        </ul>
+        <h3 style="margin-top:12px">עלויות אפשריות נוספות:</h3>
+        <ul>
+            <li><strong>ManyChat Pro</strong> (~₪50-60/חודש) — במידה ותרצי את תסריטי השיחה המורכבים (ראי הסבר בטאב "תוכנית עבודה")</li>
+            <li><strong>ניהול שיווק שוטף</strong> — אם תרצי שאמשיך לנהל קמפיינים בהמשך (ראי טאב "שיווק שוטף לאחר השקת הבוט")</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ==================== TAB 4: מידע חשוב ==================== -->
+<div id="transparency" class="tab-content">
+    <h2 style="color:var(--primary); margin-bottom:12px;">כמה דברים שחשוב שתדעי</h2>
+
+    <div class="card warn">
+        <h3>איך שינויים בבוט משפיעים על הפעילות השוטפת</h3>
+        <p style="font-size:0.88em; color:var(--muted); margin-bottom:10px">לא כל השלבים משפיעים באותו אופן על הבוט שעובד אצלך היום. הנה הפירוט כדי שתדעי בדיוק מה קורה בכל שלב:</p>
+
+        <div class="disruption">
+            <span class="level live">משפיע על הבוט החי</span>
+            <strong>שלב 1 — שיפור הגדרות:</strong> כשנשנה את הטקסטים של הבוט (שם, מידע, הודעת פתיחה), השינוי נכנס לתוקף מיד. <strong>לכן את תאשרי כל שינוי מראש</strong>, ואם משהו לא מתאים — אפשר להחזיר תוך דקה.
+        </div>
+        <div class="disruption">
+            <span class="level none">לא משפיע בכלל</span>
+            <strong>שלבים 2-5 — בנייה על מספר נפרד:</strong> כל העבודה על תסריטי השיחה, האוטומציות, התשלומים והשיווק מתבצעת בנפרד. <strong>הבוט הנוכחי ממשיך לעבוד כרגיל</strong> ואף לקוחה לא תרגיש שינוי.
+        </div>
+        <div class="disruption">
+            <span class="level live">משפיע על הבוט החי</span>
+            <strong>שלב 6 — ההשקה:</strong> נחליף את הבוט הישן בחדש. נעשה את זה בשעות הלילה, ואלווה אותך אחרי ההחלפה.
+        </div>
+    </div>
+
+    <div class="card warn">
+        <h3>משך זמן של תהליכים טכניים</h3>
+        <p style="font-size:0.88em; color:var(--muted); margin-bottom:10px">יש כמה דברים שתלויים בגורמים חיצוניים ולא בנו. חשוב שתדעי מראש כדי שלא תהיי מופתעת:</p>
+
+        <div class="disruption">
+            <span class="level wait">1-7 ימים</span>
+            <strong>אישור WhatsApp Business API:</strong> כדי לחבר את ManyChat למספר הוואטסאפ, חברת Meta (בעלת וואטסאפ) צריכה לאשר את החיבור. זה תהליך אוטומטי שלוקח בין יום לשבוע. נתחיל את זה מוקדם ככל האפשר.
+        </div>
+        <div class="disruption">
+            <span class="level wait">24-48 שעות</span>
+            <strong>אישור תבניות הודעות:</strong> הודעות שנשלחות יזומות (שימור, תזכורות, קמפיינים) דורשות אישור מ-Meta לפני שליחה ראשונה. אחרי האישור, הן נשלחות אוטומטית.
+        </div>
+    </div>
+
+    <div class="card warn">
+        <h3>מה אני צריך ממך</h3>
+        <p style="font-size:0.88em; color:var(--muted); margin-bottom:10px">קודם כל — לאשר את התוכנית ולקבל יחד כמה החלטות (ראי טאב <a href="#" onclick="openTab(event,'decisions'); return false;" style="color:var(--primary)">ההחלטות שלך</a>). אחרי זה, אלה הדברים שאצטרך ממך לאורך הדרך:</p>
+
+        <div class="disruption">
+            <span class="level wait">לפני שלב 1</span>
+            <strong>אישור הטקסטים החדשים</strong> — אכין הכל ואשלח לך לאישור לפני כל שינוי
+        </div>
+        <div class="disruption">
+            <span class="level wait">לפני שלב 2</span>
+            <strong>השלמת מחירים חסרים</strong> — כמה שירותים עדיין בלי מחיר, נצטרך אותם לתסריטי השיחה
+        </div>
+        <div class="disruption">
+            <span class="level wait">בשלב 2</span>
+            <strong>בדיקה שלך (QA)</strong> — לנסות את הבוט ולתת משוב. זה הזמן לבקש שינויים
+        </div>
+        <div class="disruption">
+            <span class="level wait">בשלב 5</span>
+            <strong>אישור הודעות שיווק</strong> — לא נשלח שום הודעה ללקוחות בלי שתאשרי את הטקסט
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 5: שיווק שוטף ==================== -->
+<div id="marketing" class="tab-content">
+    <p style="margin-bottom:12px">בשלב 5 של הפרויקט, אני אגדיר את כלי השיווק בתפעולית, אקים את הקמפיין הראשון (187 הלידים), ואדריך אותך איך להמשיך לבד. הנה האפשרויות להמשך:</p>
+
+    <div class="card green">
+        <h3>אפשרות א׳ — שיווק עצמאי</h3>
+        <p>אחרי ההדרכה, את שולחת קמפיינים בעצמך. בוחרת קהל, כותבת הודעה, שולחת.</p>
+        <p style="color:var(--muted); font-size:0.88em"><strong>מתאים אם:</strong> את אוהבת לכתוב, יש לך זמן, מרגישה בנוח עם המערכת</p>
+    </div>
+
+    <div class="card gold">
+        <h3>אפשרות ב׳ — ליווי חודשי (לתמחור בנפרד)</h3>
+        <p>אני מכין את ההודעות, את מאשרת, אני שולח:</p>
+        <ul>
+            <li>1-2 קמפיינים בחודש</li>
+            <li>כתיבה בשפת המותג</li>
+            <li>בחירת קהל + תזמון</li>
+            <li>דוח קצר — כמה נשלח, כמה הגיבו</li>
+        </ul>
+    </div>
+
+    <div class="card gold">
+        <h3>דוגמאות לקמפיינים:</h3>
+        <table>
+        <tr><th>קמפיין</th><th>לקהל</th><th>דוגמת הודעה</th></tr>
+        <tr><td><strong>חגים</strong></td><td>כל הלקוחות</td><td>🌿 שנה טובה מקסימה! מתנה — פרסותרפיה ב-20% הנחה עד סוף תשרי ✨</td></tr>
+        <tr><td><strong>לקוחות רדומות</strong></td><td>לא ביקרו 3+ חודשים</td><td>🌸 יקרה, מתגעגעות! מה דעתך לפנק את עצמך השבוע? 💛</td></tr>
+        <tr><td><strong>השקת שירות</strong></td><td>לקוחות ספא</td><td>🌿 חדש! שילוב פרסו + סאונה — רוצה לשמוע פרטים? ✨</td></tr>
+        <tr><td><strong>עונתי</strong></td><td>לקוחות צבע</td><td>💛 הקיץ מגיע — הזמן לרענן גוונים. פגישה השבוע? 🌿</td></tr>
+        <tr><td><strong>יום הולדת</strong></td><td>חוגגות החודש</td><td>✨ יום הולדת שמח! 15% הנחה על כל טיפול החודש 💛</td></tr>
+        </table>
+    </div>
+
+    <div class="card" style="background:#f0f7f0; border:1px dashed var(--primary); text-align:center">
+        <strong>את לא חייבת להחליט עכשיו.</strong><br>קודם נבנה את הבוט. כשהוא רץ — נדבר על שיווק שוטף.
+    </div>
+</div>
+
+<!-- ==================== TAB 6: ההחלטות שלך ==================== -->
+<div id="decisions" class="tab-content">
+    <p style="margin-bottom:6px">פה את מסמנת מה מוסכם ומה את מחליטה. עברי על כל סעיף, סמני מה שמתאים, ואם יש שאלות או הערות — כתבי בתחתית.</p>
+    <p style="margin-bottom:12px; font-size:0.88em; color:var(--muted)">בסוף, לחצי על הכפתור למטה — הוא יעתיק סיכום מוכן שתוכלי להדביק ולשלוח לי בוואטסאפ.</p>
+
+    <div class="decision-item">
+        <input type="checkbox" id="d1">
+        <label for="d1"><strong>אישור כללי:</strong> התוכנית נשמעת טוב, אפשר להתקדם</label>
+    </div>
+    <div class="decision-item">
+        <input type="checkbox" id="d2">
+        <label for="d2"><strong>תקציב:</strong> מאשרת ₪4,500 לפרויקט</label>
+    </div>
+    <div class="decision-item">
+        <input type="checkbox" id="d3">
+        <label for="d3"><strong>שיפור מיידי (שלב 1):</strong> מאשרת שנתחיל לשפר את הגדרות הבוט — אראה ואאשר כל שינוי לפני</label>
+    </div>
+    <div class="decision-item">
+        <input type="checkbox" id="d4">
+        <label for="d4"><strong>ManyChat (~₪50-60/חודש):</strong> מאשרת מערכת נוספת לתסריטי השיחה המורכבים</label>
+    </div>
+    <div class="decision-item">
+        <input type="checkbox" id="d5">
+        <label for="d5"><strong>187 לידים:</strong> מאשרת שנפנה אליהם בהודעה ממותגת (אאשר את הטקסט לפני)</label>
+    </div>
+    <div class="decision-item">
+        <input type="checkbox" id="d6">
+        <label for="d6"><strong>שיווק שוטף:</strong> אהבתי את התוכנית, מעניין אותי לשמוע על ליווי חודשי בהמשך</label>
+    </div>
+
+    <div style="margin-top:15px; padding-top:12px; border-top: 1px solid var(--border);">
+        <label for="notes" style="font-weight:bold; color:var(--primary)">הערות / שאלות / דברים שרוצה לשנות:</label>
+        <textarea id="notes" rows="3" style="width:100%; margin-top:8px; padding:10px; border:1px solid var(--border); border-radius:8px; font-family:inherit; font-size:0.93em; resize:vertical;" placeholder="כתבי כאן..."></textarea>
+    </div>
+
+    <button class="send-btn" onclick="copySummary()">העתיקי סיכום לשליחה</button>
+    <div class="copy-success" id="copySuccess">✅ הסיכום הועתק! אפשר להדביק ולשלוח בוואטסאפ</div>
+</div>
+
+<div class="footer">
+    <p>הוכן על ידי יפתח קוכמן | מקודשת — הכל אהבה 💛</p>
+    <p>יוני 2026</p>
+</div>
+
+<script>
+function openTab(evt, tabId) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    if (evt && evt.currentTarget && evt.currentTarget.classList) {
+        evt.currentTarget.classList.add('active');
+    } else {
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            if (b.getAttribute('onclick')?.includes(tabId)) b.classList.add('active');
+        });
+    }
+}
+
+// Save state
+function saveState() {
+    const state = {};
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => { state[cb.id] = cb.checked; });
+    state.notes = document.getElementById('notes')?.value || '';
+    localStorage.setItem('mekudeshet-proposal', JSON.stringify(state));
+}
+
+document.addEventListener('change', saveState);
+document.getElementById('notes')?.addEventListener('input', saveState);
+
+window.addEventListener('load', function() {
+    const state = JSON.parse(localStorage.getItem('mekudeshet-proposal') || '{}');
+    Object.keys(state).forEach(key => {
+        if (key === 'notes') {
+            const el = document.getElementById('notes');
+            if (el) el.value = state[key];
+        } else {
+            const cb = document.getElementById(key);
+            if (cb) cb.checked = state[key];
+        }
+    });
+});
+
+function copySummary() {
+    const labels = {
+        d1: 'אישור כללי — התוכנית נשמעת טוב',
+        d2: 'תקציב — מאשרת ₪4,500 לפרויקט',
+        d3: 'שיפור מיידי — מאשרת שלב 1',
+        d4: 'ManyChat — מאשרת מערכת נוספת (~₪50-60/חודש)',
+        d5: '187 לידים — מאשרת פנייה ממותגת',
+        d6: 'שיווק שוטף — מעניין ליווי חודשי בהמשך'
+    };
+
+    let text = '🌿 סיכום ההחלטות שלי — מקודשת בוט:\n\n';
+    Object.keys(labels).forEach(id => {
+        const cb = document.getElementById(id);
+        text += (cb && cb.checked ? '✅' : '⬜') + ' ' + labels[id] + '\n';
+    });
+
+    const notes = document.getElementById('notes')?.value?.trim();
+    if (notes) text += '\n📝 הערות:\n' + notes + '\n';
+
+    text += '\n💛 הכל אהבה';
+
+    navigator.clipboard.writeText(text).then(() => {
+        const el = document.getElementById('copySuccess');
+        el.style.display = 'block';
+        setTimeout(() => { el.style.display = 'none'; }, 3000);
+    }).catch(() => {
+        prompt('העתיקי את הטקסט:', text);
+    });
+}
+</script>
+
+</body>
+</html>
